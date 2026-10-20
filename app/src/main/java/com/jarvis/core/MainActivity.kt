@@ -138,12 +138,12 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         return "Application $appKey is not installed or unreachable, sir."
     }
 
-    private suspend fun askAI(prompt: String): String = withContext(Dispatchers.IO) {
+      private suspend fun askAI(prompt: String): String = withContext(Dispatchers.IO) {
         try {
-            val url = "http://192.168.1.100:1234/v1/chat/completions"
+            val url = "https://integrate.api.nvidia.com/v1/chat/completions"
 
             val json = JSONObject().apply {
-                put("model", "qwen2.5-7b")
+                put("model", "meta/llama-3.1-8b-instruct")
                 put("max_tokens", 200)
                 val msgArray = JSONArray().apply {
                     put(JSONObject().apply {
@@ -159,7 +159,11 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             }
 
             val body = json.toString().toRequestBody("application/json".toMediaType())
-            val request = Request.Builder().url(url).post(body).build()
+            val request = Request.Builder()
+                .url(url)
+                .addHeader("Authorization", "Bearer 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")
+                .post(body)
+                .build()
 
             client.newCall(request).execute().use { response ->
                 if (!response.isSuccessful) return@withContext "Matrix link error: HTTP ${response.code}"
@@ -172,7 +176,7 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     .trim()
             }
         } catch (e: Exception) {
-            "Host AI core unreachable, sir: ${e.message}"
+            "NVIDIA core offline, sir: ${e.message}"
         }
     }
 
