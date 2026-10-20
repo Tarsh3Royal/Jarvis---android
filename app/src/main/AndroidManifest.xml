@@ -18,6 +18,7 @@
         android:allowBackup="true"
         android:label="JARVIS Core"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@android:style/Theme.Material.NoActionBar">
         <activity
             android:name=".MainActivity"
@@ -29,4 +30,3 @@
         </activity>
     </application>
 </manifest>
-
