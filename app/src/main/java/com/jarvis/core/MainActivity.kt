@@ -14,7 +14,6 @@ import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -51,7 +50,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         .readTimeout(15, TimeUnit.SECONDS)
         .build()
 
-    // Status state
     private val statusText = mutableStateOf("COLD STANDBY")
     private val statusColor = mutableStateOf(Color(0xFF555555))
     private val logMessages = mutableStateListOf<String>()
@@ -98,8 +96,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         logMessages.add(msg)
     }
 
-    // --- REPLACEMENTS FOR actions.py ---
-
     private fun getBatteryStatus(): String {
         val bm = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         val level = bm.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
@@ -127,7 +123,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
             }
         }
 
-        // Web Fallback
         val webFallbackMap = mapOf(
             "gmail" to "https://mail.google.com",
             "outlook" to "https://outlook.live.com",
@@ -145,8 +140,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 
     private suspend fun askAI(prompt: String): String = withContext(Dispatchers.IO) {
         try {
-            // Note: Since tablet cannot run LM Studio locally on 127.0.0.1, 
-            // connect to your desktop PC IP (e.g. 192.168.1.5:1234) or a cloud endpoint.
             val url = "http://192.168.1.100:1234/v1/chat/completions"
 
             val json = JSONObject().apply {
@@ -249,8 +242,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
         speechRecognizer.startListening(intent)
     }
 
-    // --- COMPOSE UI ---
-
     @Composable
     fun JarvisThemeUI() {
         var inputText by remember { mutableStateOf("") }
@@ -264,7 +255,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
-                // Header
                 Text(
                     text = "JARVIS COGNITIVE CORE - LIQUID GLASS",
                     color = Color(0xFF00D2FF),
@@ -285,7 +275,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
                         .padding(top = 4.dp, bottom = 12.dp)
                 )
 
-                // Console Output
                 Card(
                     modifier = Modifier
                         .weight(1f)
@@ -312,7 +301,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Input bar
                 OutlinedTextField(
                     value = inputText,
                     onValueChange = { inputText = it },
@@ -341,7 +329,6 @@ class MainActivity : ComponentActivity(), TextToSpeech.OnInitListener {
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                // Quick Action Buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
